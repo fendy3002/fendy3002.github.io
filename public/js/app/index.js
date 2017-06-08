@@ -46,5 +46,13 @@ var renderPage = function(initialState){
         </Provider>,
         document.getElementById('content')
     );
+
+    setTimeout(() => {
+        var adminLteScript = document.createElement('script');
+        adminLteScript.src = "https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.3.11/js/app.min.js";
+        adminLteScript.origin = "anonymous";
+        document.getElementsByTagName('head')[0].appendChild(adminLteScript);
+
+    }, 500);
 };
 renderPage([]);
