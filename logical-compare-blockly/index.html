@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>A Blockly-based visual editor for JSON structures.</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h1>
+                An editor for <a href="https://github.com/fendy3002/QzNode/tree/master/packages/logicalCompare#readme">Logical
+                    compare</a>
+                structures made out of <a href="https://developers.google.com/blockly/">Blockly</a>.<br />
+                Inspired by <a href="https://github.com/ens-lg4/MenulyJSON">MenulyJSON</a>.
+            </h1>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-8">
+                <div id="blocklyDiv" style="height:600px;"></div>
+
+                <xml id="toolbox" style="display: none">
+                    <category name="Misc" colour="290">
+                        <block type="start"></block>
+                    </category>
+                    <category name="Properties" colour="20">
+                        <block type="s_prop"></block>
+                        <block type="number"></block>
+                        <block type="string"></block>
+                        <block type="s_boolean"></block>
+                        <block type="boolean"></block>
+                        <block type="s_date"></block>
+                    </category>
+                    <category name="Logic" colour="210">
+                        <block type="s_compare"></block>
+                        <block type="s_and"></block>
+                        <block type="s_or"></block>
+                        <block type="s_between"></block>
+                        <block type="s_between_ex"></block>
+                    </category>
+                </xml>
+            </div>
+            <div class="col-12 col-lg-4">
+                <button onclick="toText()" class="btn btn-primary">Generate JSON</button>
+                <button onclick="parseText()" class="btn btn-primary">interpret JSON from the textarea below</button>
+                <textarea id=json_area class="form-control" rows="20"></textarea>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="blockly_compressed.js"></script>
+
+    <!-- blocks to build JSON structures from: -->
+    <script type="text/javascript" src="logical_compare_blocks.js"></script>
+
+    <!-- transforming a blockly diagram into a JSON string: -->
+    <script type="text/javascript" src="logical_compare_codegen.js"></script>
+
+    <!-- building a blockly diagram from a JSON string: -->
+    <script type="text/javascript" src="logical_compare_parsetext.js"></script>
+
+    <script>
+        let init = (Blockly) => {
+            Blockly.inject(document.getElementById('blocklyDiv'), {
+                //rtl: true,
+                toolbox: document.getElementById('toolbox'),
+                media: 'media/',    // to avoid reaching to the web for icons
+                sound: false,
+                collapse: true, comments: true, disable: false, scrollbars: true, trashcan: true // those ones are automatically true when there are categories
+            });
+            let jsonText = JSON.stringify({
+                "$and": [
+                    {
+                        "$or": [
+                            {
+                                "$compare": [
+                                    {
+                                        "$date": {
+                                            "$prop": "birth_date"
+                                        }
+                                    },
+                                    "lt",
+                                    {
+                                        "$date": "2010-01-01"
+                                    }
+                                ]
+                            },
+                            {
+                                "$compare": [
+                                    {
+                                        "$prop": "first_name"
+                                    },
+                                    "starts_with",
+                                    "June"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "$between": [
+                            0,
+                            {
+                                "$prop": "total_price"
+                            },
+                            1000
+                        ]
+                    }
+                ]
+            }, null, 2);
+            document.getElementById("json_area").value = jsonText;
+            Blockly.logical_compare.parseText(jsonText, Blockly.getMainWorkspace());
+        };
+        function toText() {
+            let textResult = Blockly.logical_compare.toText(Blockly.getMainWorkspace());
+            document.getElementById('json_area').value = textResult;
+        };
+        function parseText() {
+            let jsonText = document.getElementById('json_area').value;
+            Blockly.logical_compare.parseText(jsonText, Blockly.getMainWorkspace());
+        };
+
+        initBlocks(Blockly);
+        initCodegen(Blockly);
+        initParseText(Blockly);
+        init(Blockly);
+    </script>
+</body>
+
+</html>
