@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>A Blockly-based visual editor for JSON structures.</title>
+    <title>Logical compare playground</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
 
 </head>
@@ -66,8 +66,8 @@
             Blockly.inject(document.getElementById('blocklyDiv'), {
                 //rtl: true,
                 toolbox: document.getElementById('toolbox'),
-                media: 'media/',    // to avoid reaching to the web for icons
-                sound: false,
+                //media: 'media/',    // to avoid reaching to the web for icons
+                sounds: false,
                 collapse: true, comments: true, disable: false, scrollbars: true, trashcan: true // those ones are automatically true when there are categories
             });
             let jsonText = JSON.stringify({
