@@ -76,6 +76,10 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js"></script>
     <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yaml/yaml.min.js"></script>
 
     <script>
         let state = {
@@ -96,24 +100,26 @@
                 collapse: true, comments: true, disable: false, scrollbars: true, trashcan: true // those ones are automatically true when there are categories
             });
             state.editor = CodeMirror.fromTextArea(document.getElementById("parsed_area"), {
-                lineNumbers: true
+                lineNumbers: true,
+                mode: "yaml"
             });
 
-            let yamlText = `"$and":
-  - "$or":
-    - "$compare":
-      - "$date":
-        "$prop": birth_date
-      - lt
-      - "$date": '2010-01-01'
-    - "$compare":
-      - "$prop": first_name
-      - starts_with
-      - June
-  - "$between":
-    - 0
-    - "$prop": total_price
-    - 1000`;
+            let yamlText = `$and:
+  - $or:
+      - $compare:
+          - $date: null
+            $prop: birth_date
+          - lt
+          - $date: '2010-01-01'
+      - $compare:
+          - $prop: first_name
+          - starts_with
+          - June
+  - $between:
+      - 0
+      - $prop: total_price
+      - 1000`;
+
             state.editor.setValue(yamlText);
             parseText();
         };
@@ -137,10 +143,12 @@
             if (state.currentFormat == "YAML") {
                 nextText = JSON.stringify(jsyaml.safeLoad(currentText), null, 2);
                 state.currentFormat = "JSON";
+                state.editor.setOption("mode", "javascript");
             }
             else {
                 nextText = jsyaml.dump(JSON.parse(currentText));
                 state.currentFormat = "YAML";
+                state.editor.setOption("mode", "yaml");
             }
             state.editor.setValue(nextText);
         };
