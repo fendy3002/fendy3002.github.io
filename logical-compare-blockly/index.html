@@ -126,7 +126,7 @@
         function toText() {
             let textResult = Blockly.logical_compare.toText(Blockly.getMainWorkspace());
             if (state.currentFormat == "YAML") {
-                textResult = YAML.dump(JSON.parse(textResult));
+                textResult = jsyaml.dump(JSON.parse(textResult));
             }
             state.editor.setValue(textResult);
         };
