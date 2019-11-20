@@ -72,6 +72,9 @@ let initParseText = (Blockly) => {
                 else if (json_structure.hasOwnProperty("$betweenEx")) {
                     handle_s_between("$betweenEx", json_structure, parentConnection, workspace);
                 }
+                else{
+                    throw new Error("Element is not recognized");
+                }
             }
         }
     };
