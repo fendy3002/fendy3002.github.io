@@ -88,9 +88,13 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yaml/yaml.min.js"></script>
 
+    <script type="text/javascript" src="logicData.js"></script>
+    <script type="text/javascript" src="compareData.js"></script>
+
     <script>
-        let state = {
-            currentFormat: "YAML",
+        window.state = {
+            ...window.state,
+            currentFormat: "JSON",
             editor: null
         };
 
@@ -108,26 +112,11 @@
             });
             state.editor = CodeMirror.fromTextArea(document.getElementById("parsed_area"), {
                 lineNumbers: true,
-                mode: "yaml"
+                mode: "javascript"
             });
 
-            let yamlText = `$and:
-  - $or:
-      - $compare:
-          - $date: null
-            $prop: birth_date
-          - lt
-          - $date: '2010-01-01'
-      - $compare:
-          - $prop: first_name
-          - starts_with
-          - June
-  - $between:
-      - 0
-      - $prop: total_price
-      - 1000`;
-
-            state.editor.setValue(yamlText);
+            let jsonText = JSON.stringify(state.logicData.first);
+            state.editor.setValue(jsonText);
             changeFormat("BLOCKLY");
         };
         function changeFormat(newFormat) {
