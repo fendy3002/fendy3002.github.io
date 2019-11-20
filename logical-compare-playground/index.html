@@ -77,12 +77,32 @@
                         <textarea id="parsed_area" class="form-control" rows="20"></textarea>
                     </div>
                 </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        Then try to compare the logic with data below:
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row" id="divCompareData">
+                    <div class="col-12">
+                        <textarea id="compare_data_area" class="form-control" rows="20"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-primary" id="btnEval">Evaluate</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
                 <div class="row">
                     <div style="height: 120px"></div>
                 </div>
             </div>
         </div>
-
     </div>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -111,7 +131,8 @@
         window.state = {
             ...window.state,
             currentFormat: "JSON",
-            editor: null
+            editor: null,
+            compareDataEditor: null
         };
 
         document.getElementById("btnBlockly").onclick = () => changeFormat("BLOCKLY");
@@ -159,6 +180,11 @@
                 lineNumbers: true,
                 mode: "javascript"
             });
+            state.compareDataEditor = CodeMirror.fromTextArea(document.getElementById("compare_data_area"), {
+                lineNumbers: true,
+                mode: "javascript"
+            });
+            state.compareDataEditor.setValue(JSON.stringify(state.compareData, null, 2));
 
             loadPreset(0);
         };
