@@ -27,6 +27,18 @@
                 </div>
                 <div class="row">
                     <div class="col-12 text-center">
+                        <div class="dropdown" style="display: inline-block;">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="loadPresetButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Load Preset
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <button class="dropdown-item" id="loadPresetButton1">Male born before 2000-01-01</button>
+                                <button class="dropdown-item" id="loadPresetButton2">Female with height above 160 or
+                                    born after 1980-01-01</button>
+                            </div>
+                        </div>
+
                         <button class="btn btn-primary" id="btnBlockly">Blockly</button>
                         <button class="btn btn-primary" id="btnJson">JSON</button>
                         <button class="btn btn-primary" id="btnYaml">YAML</button>
@@ -72,6 +84,10 @@
         </div>
 
     </div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="blockly_compressed.js"></script>
 
     <!-- blocks to build JSON structures from: -->
@@ -101,8 +117,37 @@
         document.getElementById("btnBlockly").onclick = () => changeFormat("BLOCKLY");
         document.getElementById("btnJson").onclick = () => changeFormat("JSON");
         document.getElementById("btnYaml").onclick = () => changeFormat("YAML");
+        document.getElementById("loadPresetButton1").onclick = () => {
+            if (confirm("Are you sure to load preset?")) {
+                loadPreset(0);
+            }
+        };
+        document.getElementById("loadPresetButton2").onclick = () => {
+            if (confirm("Are you sure to load preset?")) {
+                loadPreset(1);
+            }
+        };
 
-        let init = (Blockly) => {
+        function loadPreset(index) {
+            let preset = null;
+            switch (index) {
+                case 0:
+                    preset = state.logicData.first;
+                    break;
+                case 1:
+                    preset = state.logicData.second;
+                    break;
+                default:
+                    break;
+            };
+
+            state.currentFormat = "JSON";
+            let jsonText = JSON.stringify(preset);
+            state.editor.setValue(jsonText);
+            changeFormat("BLOCKLY");
+        }
+
+        function init(Blockly) {
             Blockly.inject(document.getElementById('blocklyDiv'), {
                 //rtl: true,
                 toolbox: document.getElementById('toolbox'),
@@ -115,9 +160,7 @@
                 mode: "javascript"
             });
 
-            let jsonText = JSON.stringify(state.logicData.first);
-            state.editor.setValue(jsonText);
-            changeFormat("BLOCKLY");
+            loadPreset(0);
         };
         function changeFormat(newFormat) {
             let oldFormat = state.currentFormat;
@@ -169,6 +212,7 @@
         initCodegen(Blockly);
         initParseText(Blockly);
         init(Blockly);
+        $('.dropdown-toggle').dropdown()
     </script>
 </body>
 
