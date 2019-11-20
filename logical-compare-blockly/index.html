@@ -13,14 +13,20 @@
     <div class="container">
         <div class="row">
             <h1>
-                An editor for <a
-                    href="https://github.com/fendy3002/QzNode/tree/master/packages/logicalCompare#readme">Logical
+                An editor for <a href="https://github.com/fendy3002/QzNode/tree/master/packages/logicalCompare#readme">Logical
                     compare</a>
                 structures made out of <a href="https://developers.google.com/blockly/">Blockly</a>.<br />
                 Inspired by <a href="https://github.com/ens-lg4/MenulyJSON">MenulyJSON</a>.
             </h1>
         </div>
         <div class="row">
+            <div class="col-12 text-center">
+                <button class="btn btn-primary" id="btnBlockly">Blockly</button>
+                <button class="btn btn-primary" id="btnJson">JSON</button>
+                <button class="btn btn-primary" id="btnYaml">YAML</button>
+            </div>
+        </div>
+        <div class="row" id="divBlockly">
             <div class="col-12">
                 <div id="blocklyDiv" style="height:600px;"></div>
 
@@ -46,16 +52,9 @@
                 </xml>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 text-center">
-                <button class="btn btn-primary" id="btnGenerate"><i class="fa fa-arrow-down"></i> Generate</button>
-                <button class="btn btn-primary" id="btnInterpret"><i class="fa fa-arrow-up"></i> Interpret</button>
-                <button class="btn btn-primary" id="btnConvert"><i class="fa fa-sync"></i> Convert</button>
-            </div>
-        </div>
-        <div class="row">
+        <div class="row" id="divParsed">
             <div class="col-12">
-                <textarea id=parsed_area class="form-control" rows="20"></textarea>
+                <textarea id="parsed_area" class="form-control" rows="20"></textarea>
             </div>
         </div>
         <div class="row">
@@ -74,12 +73,9 @@
     <script type="text/javascript" src="logical_compare_parsetext.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
-    <script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yaml/yaml.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yaml/yaml.min.js"></script>
 
     <script>
         let state = {
@@ -87,9 +83,9 @@
             editor: null
         };
 
-        document.getElementById("btnGenerate").onclick = toText;
-        document.getElementById("btnInterpret").onclick = parseText;
-        document.getElementById("btnConvert").onclick = convertFormat;
+        document.getElementById("btnBlockly").onclick = () => changeFormat("BLOCKLY");
+        document.getElementById("btnJson").onclick = () => changeFormat("JSON");
+        document.getElementById("btnYaml").onclick = () => changeFormat("YAML");
 
         let init = (Blockly) => {
             Blockly.inject(document.getElementById('blocklyDiv'), {
@@ -121,36 +117,72 @@
       - 1000`;
 
             state.editor.setValue(yamlText);
-            parseText();
+            changeFormat("BLOCKLY");
         };
-        function toText() {
-            let textResult = Blockly.logical_compare.toText(Blockly.getMainWorkspace());
-            if (state.currentFormat == "YAML") {
-                textResult = jsyaml.dump(JSON.parse(textResult));
-            }
-            state.editor.setValue(textResult);
-        };
-        function parseText() {
+        // function toText() {
+        //     let textResult = Blockly.logical_compare.toText(Blockly.getMainWorkspace());
+        //     if (state.currentFormat == "YAML") {
+        //         textResult = jsyaml.dump(JSON.parse(textResult));
+        //     }
+        //     state.editor.setValue(textResult);
+        // };
+        // function parseText() {
+        //     let parsedText = state.editor.getValue();
+        //     if (state.currentFormat == "YAML") {
+        //         parsedText = JSON.stringify(jsyaml.safeLoad(parsedText), null, 2);
+        //     }
+        //     Blockly.logical_compare.parseText(parsedText, Blockly.getMainWorkspace());
+        // };
+        // function convertFormat() {
+        //     let currentText = state.editor.getValue();
+        //     let nextText = "";
+        //     if (state.currentFormat == "YAML") {
+        //         nextText = JSON.stringify(jsyaml.safeLoad(currentText), null, 2);
+        //         state.currentFormat = "JSON";
+        //         state.editor.setOption("mode", "javascript");
+        //     }
+        //     else {
+        //         nextText = jsyaml.dump(JSON.parse(currentText));
+        //         state.currentFormat = "YAML";
+        //         state.editor.setOption("mode", "yaml");
+        //     }
+        //     state.editor.setValue(nextText);
+        // };
+
+        function changeFormat(newFormat) {
+            console.log(newFormat);
+            let oldFormat = state.currentFormat;
+            let currentValue = null;
             let parsedText = state.editor.getValue();
-            if (state.currentFormat == "YAML") {
-                parsedText = JSON.stringify(jsyaml.safeLoad(parsedText), null, 2);
+            if (oldFormat == "BLOCKLY") {
+                currentValue = JSON.parse(Blockly.logical_compare.toText(Blockly.getMainWorkspace()));
             }
-            Blockly.logical_compare.parseText(parsedText, Blockly.getMainWorkspace());
-        };
-        function convertFormat() {
-            let currentText = state.editor.getValue();
-            let nextText = "";
-            if (state.currentFormat == "YAML") {
-                nextText = JSON.stringify(jsyaml.safeLoad(currentText), null, 2);
-                state.currentFormat = "JSON";
-                state.editor.setOption("mode", "javascript");
+            else if (oldFormat == "YAML") {
+                currentValue = jsyaml.safeLoad(parsedText);
             }
-            else {
-                nextText = jsyaml.dump(JSON.parse(currentText));
-                state.currentFormat = "YAML";
+            else if (oldFormat == "JSON") {
+                currentValue = JSON.parse(parsedText);
+            }
+
+            if (newFormat == "BLOCKLY") {
+                document.getElementById("divParsed").style.display = "none";
+                document.getElementById("divBlockly").style.display = "block";
+                Blockly.logical_compare.parseText(JSON.stringify(currentValue), Blockly.getMainWorkspace());
+            }
+            else if (newFormat == "YAML") {
+                document.getElementById("divParsed").style.display = "block";
+                document.getElementById("divBlockly").style.display = "none";
+                state.editor.setValue(jsyaml.dump(currentValue, 2));
                 state.editor.setOption("mode", "yaml");
             }
-            state.editor.setValue(nextText);
+            else if (newFormat == "JSON") {
+                document.getElementById("divParsed").style.display = "block";
+                document.getElementById("divBlockly").style.display = "none";
+                state.editor.setValue(JSON.stringify(currentValue, null, 2));
+                state.editor.setOption("mode", "javascript");
+            }
+
+            state.currentFormat = newFormat;
         };
 
         initBlocks(Blockly);
