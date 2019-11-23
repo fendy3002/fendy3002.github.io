@@ -35,7 +35,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <button class="dropdown-item" id="loadPresetButton1">Male born before 2000-01-01</button>
                                 <button class="dropdown-item" id="loadPresetButton2">Female with height above 160 or
-                                    born after 1980-01-01</button>
+                                <button class="dropdown-item" id="loadPresetButton3">Anyone birth on Ohio and Illinois</button>
                             </div>
                         </div>
 
@@ -61,6 +61,7 @@
                                 <block type="s_boolean"></block>
                                 <block type="boolean"></block>
                                 <block type="s_date"></block>
+                                <block type="array"></block>
                             </category>
                             <category name="Logic" colour="210">
                                 <block type="s_compare"></block>
@@ -154,6 +155,11 @@
                 loadPreset(1);
             }
         };
+        document.getElementById("loadPresetButton3").onclick = () => {
+            if (confirm("Are you sure to load preset?")) {
+                loadPreset(2);
+            }
+        };
         document.getElementById("btnEval").onclick = () => {
             let resolveDiv = document.getElementById("resolveDiv");
             let action = null;
@@ -191,6 +197,9 @@
                     break;
                 case 1:
                     preset = state.logicData.second;
+                    break;
+                case 2:
+                    preset = state.logicData.third;
                     break;
                 default:
                     break;

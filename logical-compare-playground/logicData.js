@@ -61,5 +61,14 @@
                 ]
             }
         ]
+    },
+    "third": {
+        "$compare": [
+            {
+                "$prop": "address.stateCode"
+            },
+            "in",
+            ["OH", "IL"]
+        ]
     }
 }

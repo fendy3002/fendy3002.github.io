@@ -13,6 +13,70 @@ let initBlocks = (Blockly) => {
         }
     };
     
+    Blockly.Blocks['array'] = {
+        length: 2,
+        init: function () {
+            this.setColour(20);
+            this.setOutput(true, ["array"]);
+    
+            this.appendDummyInput()
+                .setAlign(Blockly.ALIGN_CENTRE)
+                .appendField()
+                .appendField(new Blockly.FieldDropdown([
+                    ["-----", ""],
+                    ["Add", "ADD"],
+                    ["Delete last", "DELETE"]
+                ], this.checkAction.bind(this)), "ACTION");
+
+            this.appendDummyInput("dummy_1")
+                .setAlign(Blockly.ALIGN_CENTRE)
+                .appendField('"')
+                .appendField(new Blockly.FieldTextInput(''), 'element_1')
+                .appendField('"');
+            this.appendDummyInput("dummy_2")
+                .setAlign(Blockly.ALIGN_CENTRE)
+                .appendField('"')
+                .appendField(new Blockly.FieldTextInput(''), 'element_2')
+                .appendField('"');
+        },
+        checkAction: function (newValue) {
+            if (newValue === "ADD") {
+                this.add();
+            }
+            else if (newValue === "DELETE" && this.length > 1) {
+                let lastIndex = this.length - 1;
+                let inputName = 'dummy_' + lastIndex;
+                this.delete(inputName);
+            }
+
+            return "";
+        },
+        add: function() {
+            let lastIndex = this.length++;
+            let inputName = 'element_' + lastIndex;
+            let dummyName = 'dummy_' + lastIndex;
+            this.appendDummyInput(dummyName)
+                .setAlign(Blockly.ALIGN_CENTRE)
+                .appendField('"')
+                .appendField(new Blockly.FieldTextInput(''), inputName)
+                .appendField('"');
+        },
+        delete: function (inputNameToDelete) {
+            let substructure = this.getInputTargetBlock(inputNameToDelete);
+            if (substructure) {
+                substructure.dispose(true, true);
+            }
+            this.removeInput(inputNameToDelete);
+            let inputIndexToDelete = parseInt(inputNameToDelete.match(/\d+/)[0]);
+            let lastIndex = --this.length;
+
+            for (let i = inputIndexToDelete + 1; i <= lastIndex; i++) { // rename all the subsequent element-inputs
+                let input = this.getInput('element_' + i);
+                input.name = 'element_' + (i - 1);
+            }
+        }
+    };
+
     Blockly.Blocks['string'] = {
         init: function () {
             this.setColour(20);
@@ -155,7 +219,7 @@ let initBlocks = (Blockly) => {
                 if (newValue === "ADD") {
                     this.add();
                 }
-                else if (newValue === "DELETE") {
+                else if (newValue === "DELETE" && this.length > 2) {
                     let lastIndex = this.length - 1;
                     let inputName = 'element_' + lastIndex;
                     this.delete(inputName);
