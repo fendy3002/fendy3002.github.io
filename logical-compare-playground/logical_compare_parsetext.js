@@ -72,6 +72,9 @@ let initParseText = (Blockly) => {
                 else if (json_structure.hasOwnProperty("$betweenEx")) {
                     handle_s_between("$betweenEx", json_structure, parentConnection, workspace);
                 }
+                else if(Array.isArray(json_structure)){
+                    handle_array(json_structure, parentConnection, workspace);
+                }
                 else{
                     throw new Error("Element is not recognized");
                 }
@@ -79,6 +82,20 @@ let initParseText = (Blockly) => {
         }
     };
 
+    let handle_array = (json_structure, parentConnection, workspace) => {
+        let block = workspace.newBlock('array', true);
+
+        for (let i = 0; i < json_structure.length; i++) {
+            if (i > 1) {
+                block.add.bind(block)();
+            }
+            block.setFieldValue(json_structure[i], 'element_' + i)
+        }
+
+        block.initSvg();
+        let blockOutput = block.outputConnection;
+        blockOutput.connect(parentConnection);
+    };
     let handle_s_boolean = (json_structure, parentConnection, workspace) => {
         let block = workspace.newBlock('s_boolean', true);
         block.setFieldValue(json_structure.$boolean ? "TRUE" : "FALSE", 'bool_value');

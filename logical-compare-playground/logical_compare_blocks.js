@@ -28,15 +28,15 @@ let initBlocks = (Blockly) => {
                     ["Delete last", "DELETE"]
                 ], this.checkAction.bind(this)), "ACTION");
 
+            this.appendDummyInput("dummy_0")
+                .setAlign(Blockly.ALIGN_CENTRE)
+                .appendField('"')
+                .appendField(new Blockly.FieldTextInput(''), 'element_0')
+                .appendField('"');
             this.appendDummyInput("dummy_1")
                 .setAlign(Blockly.ALIGN_CENTRE)
                 .appendField('"')
                 .appendField(new Blockly.FieldTextInput(''), 'element_1')
-                .appendField('"');
-            this.appendDummyInput("dummy_2")
-                .setAlign(Blockly.ALIGN_CENTRE)
-                .appendField('"')
-                .appendField(new Blockly.FieldTextInput(''), 'element_2')
                 .appendField('"');
         },
         checkAction: function (newValue) {
@@ -187,6 +187,7 @@ let initBlocks = (Blockly) => {
                     'string',
                     'number',
                     'boolean',
+                    'array',
                     's_boolean',
                     's_prop',
                     's_date',

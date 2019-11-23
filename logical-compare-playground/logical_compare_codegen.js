@@ -26,6 +26,21 @@ let initCodegen = (Blockly) => {
         let string_value = block.getFieldValue('string_value');
         return string_value;
     };
+    Blockly.logical_compare['array'] = function (block) {
+        let result = [];
+        let length = block.length;
+
+        for (let index = 0; index < length; index++) {
+            let value = block.getFieldValue('element_' + index);
+            if (value) {
+                result.push(value);
+            }
+            else {
+                result.push(null);
+            }
+        }
+        return result;
+    };
     Blockly.logical_compare['number'] = function (block) {
         let number_value = Number(block.getFieldValue('number_value'));
         return number_value;
