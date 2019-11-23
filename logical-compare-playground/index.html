@@ -99,6 +99,11 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div id="resolveDiv"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
                     <div style="height: 120px"></div>
                 </div>
             </div>
@@ -126,6 +131,7 @@
 
     <script type="text/javascript" src="logicData.js"></script>
     <script type="text/javascript" src="compareData.js"></script>
+    <script type="text/javascript" src="LogicalCompare.js"></script>
 
     <script>
         window.state = {
@@ -147,6 +153,34 @@
             if (confirm("Are you sure to load preset?")) {
                 loadPreset(1);
             }
+        };
+        document.getElementById("btnEval").onclick = () => {
+            let resolveDiv = document.getElementById("resolveDiv");
+            let action = null;
+            let data = JSON.parse(state.compareDataEditor.getValue());
+            if (state.currentFormat == "BLOCKLY") {
+                let logic = JSON.parse(Blockly.logical_compare.toText(Blockly.getMainWorkspace()));
+                action = window.LogicalCompare.jsonEvalArr()(data, logic);
+            }
+            else if (state.currentFormat == "JSON") {
+                let logic = JSON.parse(state.editor.getValue());
+                action = window.LogicalCompare.jsonEvalArr()(data, logic);
+            }
+            else if (state.currentFormat == "YAML") {
+                let logic = jsyaml.safeLoad(state.editor.getValue());
+                action = window.LogicalCompare.jsonEvalArr()(data, logic);
+            }
+
+            action.then((result) => {
+                let parent = document.createElement("ul");
+                for (let each of result) {
+                    let item = document.createElement("li");
+                    item.innerHTML = each.order + " " + each.evaluation;
+                    parent.appendChild(item);
+                }
+                resolveDiv.innerHTML = "";
+                resolveDiv.appendChild(parent);
+            });
         };
 
         function loadPreset(index) {
@@ -238,6 +272,7 @@
         initCodegen(Blockly);
         initParseText(Blockly);
         init(Blockly);
+
         $('.dropdown-toggle').dropdown()
     </script>
 </body>
