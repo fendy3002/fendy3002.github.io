@@ -66,9 +66,18 @@ let initCodegen = (Blockly) => {
         if (date_source) {
             dateValue = Blockly.logical_compare[date_source.type](date_source);
         }
-        return {
+        let result = {
             $date: dateValue
         };
+        let formatFrom = block.getFieldValue("format_from");
+        if (formatFrom) {
+            result.formatFrom = formatFrom;
+        }
+        let formatTo = block.getFieldValue("format_to");
+        if (formatTo) {
+            result.formatTo = formatTo;
+        }
+        return result;
     };
     Blockly.logical_compare['s_prop'] = function (block) {
         let prop_name = block.getFieldValue('prop_name');

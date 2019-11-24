@@ -72,10 +72,10 @@ let initParseText = (Blockly) => {
                 else if (json_structure.hasOwnProperty("$betweenEx")) {
                     handle_s_between("$betweenEx", json_structure, parentConnection, workspace);
                 }
-                else if(Array.isArray(json_structure)){
+                else if (Array.isArray(json_structure)) {
                     handle_array(json_structure, parentConnection, workspace);
                 }
-                else{
+                else {
                     throw new Error("Element is not recognized");
                 }
             }
@@ -145,6 +145,12 @@ let initParseText = (Blockly) => {
 
         let propVal = json_structure.$date;
         buildAndConnect(propVal, block.getInput("date_source").connection, workspace);
+        if (json_structure.formatFrom) {
+            block.setFieldValue(json_structure.formatFrom, "format_from");
+        }
+        if (json_structure.formatTo) {
+            block.setFieldValue(json_structure.formatTo, "format_to");
+        }
     };
     let handle_s_between = (propName, json_structure, parentConnection, workspace) => {
         let blockName = propName == "$between" ? "s_between" : "s_between_ex";

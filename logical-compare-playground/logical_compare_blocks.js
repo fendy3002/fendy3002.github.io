@@ -149,6 +149,15 @@ let initBlocks = (Blockly) => {
                 .setCheck(['string', 's_prop'])
                 .setAlign(Blockly.ALIGN_RIGHT)
                 .appendField('$date');
+
+            this.appendDummyInput()
+                .setAlign(Blockly.ALIGN_RIGHT)
+                .appendField('formatFrom')
+                .appendField(new Blockly.FieldTextInput(''), 'format_from');
+            this.appendDummyInput()
+                .setAlign(Blockly.ALIGN_RIGHT)
+                .appendField('formatTo')
+                .appendField(new Blockly.FieldTextInput(''), 'format_to');
         }
     };
     
