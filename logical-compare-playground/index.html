@@ -35,7 +35,8 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <button class="dropdown-item" id="loadPresetButton1">Male born before 2000-01-01</button>
                                 <button class="dropdown-item" id="loadPresetButton2">Female with height above 160 or
-                                <button class="dropdown-item" id="loadPresetButton3">Anyone birth on Ohio and Illinois</button>
+                                    <button class="dropdown-item" id="loadPresetButton3">Anyone birth on Ohio and
+                                        Illinois</button>
                             </div>
                         </div>
 
@@ -100,7 +101,7 @@
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div id="resolveDiv"></div>
+                    <div id="resolveDiv" class="col-12"></div>
                 </div>
             </div>
             <div class="card-body">
@@ -179,9 +180,45 @@
 
             action.then((result) => {
                 let parent = document.createElement("ul");
+                parent.className = "list-group";
                 for (let each of result) {
                     let item = document.createElement("li");
-                    item.innerHTML = each.order + " " + each.evaluation;
+                    item.className = "list-group-item";
+                    let link = document.createElement("a");
+                    link.href = "javascript:void(0)"
+                    link.className = "btn text-left";
+                    link.style = "width:100%; display:block;";
+
+                    let caret = document.createElement("i");
+                    caret.className = "fa fa-caret-right";
+
+                    let caption = document.createElement("span");
+                    caption.innerHTML = "&nbsp;" + each.order + " " + each.evaluation;
+
+                    let contentBody = document.createElement("textarea");
+                    contentBody.className = "form-control";
+                    contentBody.rows = 5;
+                    contentBody.readOnly = true;
+                    contentBody.style = "width: 100%; display: none;";
+                    contentBody.innerHTML = JSON.stringify(each.data, null, 2);
+
+                    link.onclick = () => {
+                        if (link.className.indexOf("open") >= 0) {
+                            link.className = "btn text-left";
+                            contentBody.style = "width: 100%; display: none;";
+                            caret.className = "fa fa-caret-right";
+                        }
+                        else {
+                            link.className = "btn text-left open";
+                            contentBody.style = "width: 100%; display: block;";
+                            caret.className = "fa fa-caret-down";
+                        }
+                    };
+
+                    link.appendChild(caret);
+                    link.appendChild(caption);
+                    item.appendChild(link);
+                    item.appendChild(contentBody);
                     parent.appendChild(item);
                 }
                 resolveDiv.innerHTML = "";
