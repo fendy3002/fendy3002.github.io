@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>QzEvaluator Playground</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.css" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body pb-0">
+                <h1 class="card-title">QzEvaluator Playground</h1>
+            </div>
+            <div class="card-body pb-0">
+                <div class="row">
+                    <div class="col">
+                        A playground for <a href="https://github.com/fendy3002/qz-evaluator">QzEvaluator</a> made out of
+                        <a href="https://developers.google.com/blockly/">Blockly</a>.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Compose the evaluation logic here:
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col">
+                        <button type="button" class="btn btn-danger rounded-0" id="btnClear">Clear</button>
+                        <button type="button" class="btn btn-secondary rounded-0" id="setJSON">Parse JSON</button>
+                        <button type="button" class="btn btn-secondary rounded-0" id="setYAML">Parse YAML</button>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col">
+                        <div id="evaluator" style="height:600px;"></div>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary rounded-0" id="getJSON">Get JSON</button>
+                        <button type="button" class="btn btn-primary rounded-0" id="getYAML">Get YAML</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body pt-2">
+                <div class="row">
+                    <div class="col">
+                        Provide data to be evaluated below:
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col">
+                        <textarea id="evaluated_data" class="form-control" rows="20"></textarea>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary rounded-0" id="btnEvaluate">Evaluate</button>
+                    </div>
+                </div>
+                <div class="row pb-4">
+                    <div class="col pl-4 pr-4">
+                        Evaluation result:
+                        <div id="resultSpan" class="pl-2 pr-2" style="background-color: #DDDDDD; min-height: 24px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="getTextModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control rounded-0"
+                        style="font-family: 'Courier New', Courier, monospace; font-size: 0.8rem;" readonly
+                        id="getTextInput" rows="15"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="setTextModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="container-fluid text-right">
+                        <button type="button" class="btn btn-sm btn-danger rounded-0" data-dismiss="modal"
+                            aria-label="Close">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary rounded-0" data-role="parse">
+                            Parse
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="mode" value="json" />
+                    <textarea class="form-control rounded-0"
+                        style="font-family: 'Courier New', Courier, monospace; font-size: 0.8rem;" id="setTextInput"
+                        rows="15"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid text-right">
+                        <button type="button" class="btn btn-sm btn-danger rounded-0" data-dismiss="modal"
+                            aria-label="Close">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-sm btn-primary rounded-0" data-role="parse">
+                            Parse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yaml/yaml.min.js"></script>
+
+    <script type="text/javascript" src="../public/js/bin/qz_evaluator.js"></script>
+    <script type="text/javascript" src="../public/js/bin/qz_evaluator_dom.js"></script>
+    <script>
+        let context = {
+            compareDataEditor: null
+        };
+        let evaluator = QzEvaluatorDom.render(document.getElementById('evaluator'), {
+            autosave: true,
+            readonly: false,
+            evalMode: ""
+        });
+        evaluator.load();
+        if (
+            !evaluator.getValue() ||
+            Object.keys(evaluator.getValue()).length == 0
+        ) {
+            evaluator.parseJSON({
+                "$m_sum": [
+                    {
+                        "$array_handle": {
+                            "source": {
+                                "$prop_array": "Sales"
+                            },
+                            "operation": "map",
+                            "handler": {
+                                "$prop_number": "each.Value"
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+
+        let initEvaluatedData = () => {
+            let _data = localStorage.getItem('_data_');
+            if (!_data) {
+                let defaultData = {
+                    "FirstName": "Brad",
+                    "LastName": "Gibson",
+                    "Birth": "1993-07-20",
+                    "Rank": 3,
+                    "Sales": [
+                        { "Month": 0, "Value": 1000 },
+                        { "Month": 1, "Value": 1500 },
+                        { "Month": 2, "Value": 2000 },
+                        { "Month": 3, "Value": 3000 }
+                    ]
+                };
+                $("#evaluated_data").html(JSON.stringify(defaultData, null, 4));
+            } else {
+                $("#evaluated_data").html(_data);
+            }
+            context.compareDataEditor = CodeMirror.fromTextArea(document.getElementById("evaluated_data"), {
+                lineNumbers: true,
+                mode: "javascript",
+            });
+            let changeHandle = null;
+            context.compareDataEditor.on("change", () => {
+                if (!changeHandle) {
+                    setTimeout(() => {
+                        localStorage.setItem('_data_', context.compareDataEditor.getValue());
+                        changeHandle = null;
+                    }, 500);
+                }
+            });
+        };
+        initEvaluatedData();
+
+        $("#getJSON").on("click", () => {
+            $("#getTextInput").val(
+                JSON.stringify(evaluator.getValue(), null, 2)
+            );
+            $("#getTextModal").modal({});
+        });
+        $("#getYAML").on("click", () => {
+            $("#getTextInput").val(
+                evaluator.getYAML()
+            );
+            $("#getTextModal").modal({});
+        });
+
+        $("#setJSON").on("click", () => {
+            $("#setTextInput").val("{}");
+            $("#setTextModal [name='mode']").val("json");
+            $("#setTextModal").modal({
+                backdrop: 'static'
+            });
+        });
+        $("#setYAML").on("click", () => {
+            $("#setTextInput").val("");
+            $("#setTextModal [name='mode']").val("yaml");
+            $("#setTextModal").modal({
+                backdrop: 'static'
+            });
+        });
+        $("#setTextModal [data-role='parse']").on("click", (evt) => {
+            let mode = $("#setTextModal [name='mode']").val();
+            if (mode == "json") {
+                evaluator.parseJSON(JSON.parse(
+                    $("#setTextInput").val()
+                ));
+            } else {
+                evaluator.parseYAML(
+                    $("#setTextInput").val()
+                );
+            }
+            $("#setTextModal").modal('hide');
+        });
+        $("#btnEvaluate").on("click", () => {
+            $("#resultSpan").html(evaluate());
+        });
+        $("#btnClear").on("click", () => {
+            evaluator.parseJSON({});
+        });
+
+        const evaluate = () => {
+            let data = JSON.parse(context.compareDataEditor.getValue());
+            let result = QzEvaluator.fromJSON(evaluator.getValue()).evaluate(data);
+            return result;
+        };
+    </script>
+</body>
+
+</html>
