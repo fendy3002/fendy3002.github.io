@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            <h1>QzWebForm - Static (postback)</h1>
+            <hr />
+            <ul class="nav nav-tabs" id="codeTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active rounded-0" id="html-tab" data-bs-toggle="tab" data-bs-target="#html-page"
+                        type="button" role="tab" aria-controls="html-page" aria-selected="true">HTML Structure</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0" id="htmljs-tab" data-bs-toggle="tab" data-bs-target="#htmljs-page"
+                        type="button" role="tab" aria-controls="html-page" aria-selected="true">HTML Javascript</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0" id="react-tab" data-bs-toggle="tab" data-bs-target="#react-page"
+                        type="button" role="tab" aria-controls="react-page" aria-selected="true">React</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link rounded-0" id="reacttemplate-tab" data-bs-toggle="tab" data-bs-target="#reacttemplate-page"
+                        type="button" role="tab" aria-controls="reacttemplate-page" aria-selected="true">React Template</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="codeTabContent">
+                <div class="tab-pane fade show active" id="html-page" role="tabpanel" aria-labelledby="html-page">
+                    <iframe src="./source_html.txt" style="background-color:rgba(233, 236, 239); width:100%; height: 400px;" ></iframe>
+                </div>
+                <div class="tab-pane fade" id="htmljs-page" role="tabpanel" aria-labelledby="htmljs-page">
+                    <iframe src="./source_htmljs.txt" style="background-color:rgba(233, 236, 239); width:100%; height: 400px;" ></iframe>
+                </div>
+                <div class="tab-pane fade" id="react-page" role="tabpanel" aria-labelledby="react-page">
+                    <iframe src="./source_react.txt" style="background-color:rgba(233, 236, 239); width:100%; height: 400px;" ></iframe>
+                </div>
+                <div class="tab-pane fade" id="reacttemplate-page" role="tabpanel" aria-labelledby="react-page">
+                    <iframe src="./source_reacttemplate.txt" style="background-color:rgba(233, 236, 239); width:100%; height: 400px;" ></iframe>
+                </div>
+            </div>
+            <div class="mb-4"></div>
+            <iframe src="./inner.html" frameborder="0" style="overflow-x:visible;height:800px;width:100%;"></iframe>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+
+</html>
